@@ -1,0 +1,228 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^share-location-modal$": "@/components/share-location-modal/share-location-modal.vue",
+			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "定位"
+			}
+		},
+		{
+			"path": "pages/user/login",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/user/register",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path": "pages/user/forgot-password",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "找回密码"
+			}
+		},
+	
+		{
+			"path": "pages/message/message",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/mine/setting",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/mine/account",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "账号与安全"
+			}
+		},
+		{
+			"path": "pages/mine/change-password",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
+			"path": "pages/mine/account-cancel",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "账号注销"
+			}
+		},
+		{
+			"path": "pages/mine/privacy",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "协议"
+			}
+		},
+		{
+			"path": "pages/mine/about",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "关于"
+			}
+		},
+		{
+			"path": "pages/track/track",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "历史轨迹"
+			}
+		},
+		{
+			"path": "pages/track/custom-time",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "自定义时间"
+			}
+		},
+		{
+			"path": "pages/device/device",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "设备主页"
+			}
+		},
+		{
+			"path": "pages/device/info",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "设备信息"
+			}
+		},
+		{
+			"path": "pages/service/service",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "增值服务"
+			}
+		},
+		{
+			"path": "pages/sim/sim",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "卡"
+			}
+		},
+		{
+			"path": "pages/recharge/recharge",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "充值"
+			}
+		},
+		{
+			"path": "pages/order/recharge-order",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "充值订单"
+			}
+		},
+		{
+			"path": "pages/alarm/alarm",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "告警设置"
+			}
+		},
+		{
+			"path": "pages/fence/fence",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "围栏"
+			}
+		},
+		{
+			"path": "pages/fence/create",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "创建围栏"
+			}
+		},
+		{
+			"path": "pages/report/report",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "报表"
+			}
+		},
+		{
+			"path": "pages/remote/remote",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "远程设置"
+			}
+		},
+		{
+			"path": "pages/workmode/workmode",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "工作模式"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "秒速定位",
+		"navigationBarBackgroundColor": "#3dba6e",
+		"backgroundColor": "#f4f4f4"
+	},
+	"tabBar": {
+		"color": "#999999",
+		"selectedColor": "#3dba6e",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "white",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/map.png",
+				"selectedIconPath": "static/tabbar/map-active.png",
+				"text": "定位"
+			},
+			{
+				"pagePath": "pages/message/message",
+				"iconPath": "static/tabbar/msg.png",
+				"selectedIconPath": "static/tabbar/msg-active.png",
+				"text": "消息"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"iconPath": "static/tabbar/mine.png",
+				"selectedIconPath": "static/tabbar/mine-active.png",
+				"text": "我的"
+			}
+		]
+	}
+}
