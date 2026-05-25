@@ -72,9 +72,7 @@
         <view class="form-row" @click="onPickIcon">
           <text class="form-row__label">设备图标</text>
           <view class="form-row__icon">
-            <view class="device-icon">
-              <up-icon name="car-fill" color="#3dba6e" size="22"></up-icon>
-            </view>
+            <image :src="carImg" mode="widthFix" class="device-icon"></image>
             <text class="form-row__value">{{ form.iconLabel }}</text>
             <!-- <up-icon name="arrow-right" color="#ccc" size="14"></up-icon> -->
           </view>
@@ -100,13 +98,14 @@
 
 <script>
 import { THEME_GREEN } from '@/common/theme.js'
-
+import { staticUrl } from '@/common/assets.js'
 const DEFAULT_ICCID = '89860840102490118041'
 
 export default {
   data() {
     return {
       THEME_GREEN,
+      carImg: staticUrl('/static/car.png'),
       form: {
         deviceName: '15070055007',
         deviceNo: '15070005007',
@@ -269,6 +268,9 @@ export default {
   align-items: center;
   justify-content: flex-end;
   gap: 12rpx;
+  image{
+    width: 60rpx;
+  }
 }
 
 .device-icon {

@@ -320,7 +320,6 @@ export default {
   height: 10rpx;
   background: #999;
   border-radius: 0 2rpx 2rpx 0;
-  margin-left: 2rpx;
 }
 
 .signal-badge {

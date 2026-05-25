@@ -53,7 +53,7 @@
           <view class="device-battery">
             <view class="battery-icon" :class="{ 'battery-icon--low': device.battery <= 20 }">
               <view class="battery-icon__body">
-                <view v-if="device.battery > 0" class="battery-icon__level" :style="{ width: device.battery + '%' }">
+                <view class="battery-icon__level" :style="{ width: device.battery + '%' }">
                 </view>
               </view>
               <view class="battery-icon__head"></view>
@@ -365,12 +365,11 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  padding-bottom: calc(50px + env(safe-area-inset-bottom));
+  padding: 0 20rpx calc(50px + env(safe-area-inset-bottom));
   border-radius: 24rpx 24rpx 0 0;
-  overflow: hidden;
-  background: #fff;
   box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
   z-index: 2;
+  background: linear-gradient(180deg, #2db8a8, #fff);
 }
 
 .device-panel__banner {
@@ -378,7 +377,7 @@ export default {
   align-items: center;
   gap: 16rpx;
   padding: 20rpx 24rpx;
-  background: linear-gradient(90deg, #3dba6e, #2db8a8);
+  position: relative;
 }
 
 .device-panel__banner-text {
@@ -386,19 +385,23 @@ export default {
   font-size: 30rpx;
   color: #fff;
   font-weight: 500;
+  margin-left: 60rpx;
 }
 
 .banner-pin {
-  position: relative;
+  position: absolute;
   flex-shrink: 0;
-  width: 44rpx;
-  height: 52rpx;
+  width: 66rpx;
+  height: 78rpx;
+  top: -20rpx;
+  left: 10rpx;
+  z-index: 9;
 }
 
 .banner-pin__shadow {
   position: absolute;
   left: 50%;
-  bottom: 2rpx;
+  bottom: -10rpx;
   width: 28rpx;
   height: 8rpx;
   margin-left: -14rpx;
@@ -408,21 +411,21 @@ export default {
 
 .banner-pin__body {
   position: relative;
-  width: 44rpx;
-  height: 44rpx;
+  width: 66rpx;
+  height: 66rpx;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   background: linear-gradient(135deg, #5eb3ff, #2b7de9);
-  box-shadow: 0 4rpx 10rpx rgba(43, 125, 233, 0.35);
+  box-shadow: 0 4rpx 10rpx rgba(67, 77, 90, 0.35);
 }
 
 .banner-pin__center {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 14rpx;
-  height: 14rpx;
-  margin: -7rpx 0 0 -7rpx;
+  width: 20rpx;
+  height: 20rpx;
+  margin: -10rpx 0 0 -10rpx;
   border-radius: 50%;
   background: #fff;
 }
@@ -438,6 +441,8 @@ export default {
 
 .device-panel__body {
   padding: 28rpx 28rpx 16rpx;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
 }
 
 .device-panel__body--no-banner {
@@ -496,7 +501,7 @@ export default {
 .battery-icon__body {
   width: 36rpx;
   height: 18rpx;
-  border: 2rpx solid #ccc;
+  border: 2rpx solid #999;
   border-radius: 4rpx;
   padding: 2rpx;
   box-sizing: border-box;
@@ -507,22 +512,14 @@ export default {
   background: #3dba6e;
   border-radius: 2rpx;
   min-width: 0;
+  min-width: 5rpx;
 }
 
 .battery-icon__head {
   width: 4rpx;
   height: 10rpx;
-  background: #ccc;
+  background: #999;
   border-radius: 0 2rpx 2rpx 0;
-  margin-left: 2rpx;
-}
-
-.battery-icon--low .battery-icon__body {
-  border-color: #e74c3c;
-}
-
-.battery-icon--low .battery-icon__head {
-  background: #e74c3c;
 }
 
 .battery-icon--low .battery-icon__level {
