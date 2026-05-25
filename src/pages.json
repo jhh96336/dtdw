@@ -116,6 +116,13 @@
 			}
 		},
 		{
+			"path": "pages/device/select",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "选择设备"
+			}
+		},
+		{
 			"path": "pages/device/info",
 			"style": {
 				"navigationStyle": "custom",

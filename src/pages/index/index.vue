@@ -8,9 +8,15 @@
         <view class="marker-dot"></view>
       </view>
 
-      <view class="map-refresh" @click="onRefresh">
-        <up-icon name="reload" color="#333" size="18"></up-icon>
-        <text class="map-refresh__text">刷新({{ refreshCount }})</text>
+      <view class="map-actions-left">
+        <view class="map-refresh" @click="onRefresh">
+          <up-icon name="reload" color="#333" size="18"></up-icon>
+          <text class="map-refresh__text">刷新({{ refreshCount }})</text>
+        </view>
+        <view class="map-switch" @click="goSelectDevice">
+          <up-icon name="list" color="#3dba6e" size="18"></up-icon>
+          <text class="map-switch__text">切换设备</text>
+        </view>
       </view>
 
       <view class="map-tools">
@@ -102,6 +108,21 @@
 
 <script>
 const REFRESH_INTERVAL = 20
+const STORAGE_KEY = 'currentDevice'
+
+const DEFAULT_DEVICE = {
+  id: '15070055007',
+  name: '直播间展示 533',
+  sn: '14166347553',
+  status: '离线',
+  statusType: 'offline',
+  statusDuration: '离线23小时',
+  battery: 0,
+  address: '江西省九江市濂溪区前进西路靠近安泰汽车检测',
+  meta: '0km/h | 正南 | Wi-Fi定位 | JSK1 | 离线 | 定位时间:2026/05/21 17:47:18 | 未充电 | 智能定位模式 | 震动告警:开启',
+  updateTime: '2026/05/21 17:47:18',
+  distance: '591.528km',
+}
 
 export default {
   data() {
@@ -117,16 +138,7 @@ export default {
         { icon: 'map', label: '定位' },
         { icon: 'arrow-rightward', label: '导航' },
       ],
-      device: {
-        id: '15070055007',
-        status: '离线',
-        statusDuration: '离线23小时',
-        battery: 0,
-        address: '江西省九江市濂溪区前进西路靠近安泰汽车检测',
-        meta: '0km/h | 正南 | Wi-Fi定位 | JSK1 | 离线 | 定位时间:2026/05/21 17:47:18 | 未充电 | 智能定位模式 | 震动告警:开启',
-        updateTime: '2026/05/21 17:47:18',
-        distance: '591.528km',
-      },
+      device: { ...DEFAULT_DEVICE },
       actions: [
         { key: 'precise', label: '高精准定位', icon: 'map-fill', bg: 'linear-gradient(135deg,#4a9eff,#2b7de9)' },
         { key: 'service', label: '增值服务', icon: 'gift-fill', bg: 'linear-gradient(135deg,#ff9f43,#f57c00)' },
@@ -136,6 +148,7 @@ export default {
     }
   },
   onShow() {
+    this.loadCurrentDevice()
     this.startRefreshCountdown()
   },
   onHide() {
@@ -173,6 +186,25 @@ export default {
     onRefresh() {
       this.refreshMapInfo(true)
       this.refreshCount = REFRESH_INTERVAL
+    },
+    loadCurrentDevice() {
+      const saved = uni.getStorageSync(STORAGE_KEY)
+      if (!saved || !saved.sn) return
+      const status = saved.status || '离线'
+      this.device = {
+        ...DEFAULT_DEVICE,
+        id: saved.sn,
+        name: saved.name || saved.sn,
+        sn: saved.sn,
+        status,
+        statusType: saved.statusType || (status === '静止' ? 'static' : 'offline'),
+        statusDuration: status === '静止' ? '静止中' : '离线23小时',
+        meta: DEFAULT_DEVICE.meta.replace(/离线|静止/g, status),
+      }
+      // TODO: 根据选中设备重新拉取定位详情
+    },
+    goSelectDevice() {
+      uni.navigateTo({ url: '/pages/device/select' })
     },
     onToolClick(tool) {
       uni.$u.toast(tool.label)
@@ -276,10 +308,18 @@ export default {
   margin-top: -4rpx;
 }
 
-.map-refresh {
+.map-actions-left {
   position: absolute;
   left: 24rpx;
-  top: calc(env(safe-area-inset-top) + 16rpx);
+  top: calc(var(--status-bar-height) + 40rpx);
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  z-index: 2;
+}
+
+.map-refresh,
+.map-switch {
   display: flex;
   align-items: center;
   gap: 8rpx;
@@ -294,10 +334,16 @@ export default {
   color: #333;
 }
 
+.map-switch__text {
+  font-size: 26rpx;
+  color: #3dba6e;
+  font-weight: 500;
+}
+
 .map-tools {
   position: absolute;
   right: 24rpx;
-  top: calc(env(safe-area-inset-top) + 16rpx);
+  top: calc(var(--status-bar-height) + 120rpx);
   display: flex;
   flex-direction: column;
   gap: 16rpx;
