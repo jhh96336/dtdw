@@ -21,8 +21,12 @@
               <view v-if="sig.key === 'gsm'" class="signal-bars">
                 <view v-for="n in 4" :key="n" class="signal-bars__bar"></view>
               </view>
-              <image v-else-if="sig.key === 'satellite'" class="signal-satellite__image" src="/static/satellite.png"
-                mode="widthFix"></image>
+              <image
+                v-else-if="sig.key === 'satellite'"
+                class="signal-satellite__image"
+                :src="satelliteImg"
+                mode="widthFix"
+              ></image>
               <view v-else class="signal-battery">
                 <view class="signal-battery__body">
                   <view class="signal-battery__level"></view>
@@ -56,11 +60,13 @@
 
 <script>
 import { THEME_GREEN } from '@/common/theme.js'
+import { staticUrl } from '@/common/assets.js'
 
 export default {
   data() {
     return {
       THEME_GREEN,
+      satelliteImg: staticUrl('/static/satellite.png'),
       deviceId: '15070055007',
       updateTime: '2026/05/21 17:47:18',
       remotePowerOn: true,
