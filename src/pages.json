@@ -3,6 +3,7 @@
 		"autoscan": true,
 		"custom": {
 			"^share-location-modal$": "@/components/share-location-modal/share-location-modal.vue",
+			"^amap-view$": "@/components/amap-view/amap-view.vue",
 			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
 			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
 			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"

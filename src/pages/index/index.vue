@@ -2,11 +2,8 @@
   <view class="page">
     <!-- 地图区域 -->
     <view class="map-wrap">
-      <view class="map-bg"></view>
-      <view class="map-marker">
-        <view class="marker-arrow"></view>
-        <view class="marker-dot"></view>
-      </view>
+      <amap-view ref="amapRef" class="map-amap" :latitude="mapCenter.latitude" :longitude="mapCenter.longitude"
+        :scale="mapScale" :marker-title="device.name || device.id" :address="device.address" @located="onMapLocated" />
 
       <view class="map-actions-left">
         <view class="map-refresh" @click="onRefresh">
@@ -16,12 +13,6 @@
         <view class="map-switch" @click="goSelectDevice">
           <up-icon name="list" color="#3dba6e" size="18"></up-icon>
           <text class="map-switch__text">切换设备</text>
-        </view>
-      </view>
-
-      <view class="map-tools">
-        <view v-for="(tool, idx) in mapTools" :key="idx" class="map-tools__item" @click="onToolClick(tool)">
-          <up-icon :name="tool.icon" color="#333" size="22"></up-icon>
         </view>
       </view>
     </view>
@@ -107,6 +98,14 @@
 </template>
 
 <script>
+import AmapView from '@/components/amap-view/amap-view.vue'
+import { DEFAULT_MAP_CENTER, DEFAULT_MAP_SCALE } from '@/common/amap-config'
+import {
+  getCurrentLocation,
+  getDistanceMeters,
+  formatDistance,
+} from '@/common/amap'
+
 const REFRESH_INTERVAL = 20
 const STORAGE_KEY = 'currentDevice'
 
@@ -119,25 +118,27 @@ const DEFAULT_DEVICE = {
   statusDuration: '离线23小时',
   battery: 0,
   address: '江西省九江市濂溪区前进西路靠近安泰汽车检测',
+  latitude: DEFAULT_MAP_CENTER.latitude,
+  longitude: DEFAULT_MAP_CENTER.longitude,
   meta: '0km/h | 正南 | Wi-Fi定位 | JSK1 | 离线 | 定位时间:2026/05/21 17:47:18 | 未充电 | 智能定位模式 | 震动告警:开启',
   updateTime: '2026/05/21 17:47:18',
   distance: '591.528km',
 }
 
 export default {
+  components: { AmapView },
   data() {
     return {
       refreshCount: REFRESH_INTERVAL,
       refreshTimer: null,
       showBanner: true,
       showShareModal: false,
-      mapTools: [
-        { icon: 'grid', label: '图层' },
-        { icon: 'car', label: '路况' },
-        { icon: 'wifi', label: 'GPS' },
-        { icon: 'map', label: '定位' },
-        { icon: 'arrow-rightward', label: '导航' },
-      ],
+      mapScale: DEFAULT_MAP_SCALE,
+      mapCenter: {
+        latitude: DEFAULT_MAP_CENTER.latitude,
+        longitude: DEFAULT_MAP_CENTER.longitude,
+      },
+      myLocation: null,
       device: { ...DEFAULT_DEVICE },
       actions: [
         { key: 'precise', label: '高精准定位', icon: 'map-fill', bg: 'linear-gradient(135deg,#4a9eff,#2b7de9)' },
@@ -149,6 +150,8 @@ export default {
   },
   onShow() {
     this.loadCurrentDevice()
+    this.syncMapCenter()
+    this.updateDistanceFromMe()
     this.startRefreshCountdown()
   },
   onHide() {
@@ -176,11 +179,37 @@ export default {
         this.refreshTimer = null
       }
     },
+    syncMapCenter() {
+      this.mapCenter = {
+        latitude: this.device.latitude || DEFAULT_MAP_CENTER.latitude,
+        longitude: this.device.longitude || DEFAULT_MAP_CENTER.longitude,
+      }
+      this.$nextTick(() => {
+        this.$refs.amapRef?.locateDevice?.()
+      })
+    },
+    async updateDistanceFromMe() {
+      try {
+        const pos = await getCurrentLocation()
+        this.myLocation = pos
+        const meters = getDistanceMeters(
+          pos.longitude,
+          pos.latitude,
+          this.device.longitude,
+          this.device.latitude
+        )
+        this.device.distance = formatDistance(meters)
+      } catch {
+        /* 未授权定位时保留原距离 */
+      }
+    },
     refreshMapInfo(showToast = true) {
-      // TODO: 对接地图/设备定位接口
+      // TODO: 对接设备定位接口，更新 device.latitude / longitude / address
       const now = new Date()
       const pad = (n) => String(n).padStart(2, '0')
       this.device.updateTime = `${now.getFullYear()}/${pad(now.getMonth() + 1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+      this.syncMapCenter()
+      this.updateDistanceFromMe()
       if (showToast) uni.$u.toast('已刷新')
     },
     onRefresh() {
@@ -200,17 +229,29 @@ export default {
         statusType: saved.statusType || (status === '静止' ? 'static' : 'offline'),
         statusDuration: status === '静止' ? '静止中' : '离线23小时',
         meta: DEFAULT_DEVICE.meta.replace(/离线|静止/g, status),
+        latitude: saved.latitude ?? DEFAULT_DEVICE.latitude,
+        longitude: saved.longitude ?? DEFAULT_DEVICE.longitude,
+        address: saved.address || DEFAULT_DEVICE.address,
       }
+      this.syncMapCenter()
       // TODO: 根据选中设备重新拉取定位详情
     },
     goSelectDevice() {
       uni.navigateTo({ url: '/pages/device/select' })
     },
-    onToolClick(tool) {
-      uni.$u.toast(tool.label)
+    onMapLocated(pos) {
+      this.myLocation = pos
+      const meters = getDistanceMeters(
+        pos.longitude,
+        pos.latitude,
+        this.device.longitude,
+        this.device.latitude
+      )
+      this.device.distance = formatDistance(meters)
     },
     onFastLocate() {
-      uni.$u.toast('秒速定位')
+      this.$refs.amapRef?.locateDevice?.()
+      uni.$u.toast('已定位到设备')
     },
     onCloseBanner() {
       this.showBanner = false
@@ -260,52 +301,14 @@ export default {
 
 .map-wrap {
   position: relative;
-  height: 52vh;
+  height: 60vh;
   overflow: hidden;
 }
 
-.map-bg {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, #c5dce8 0%, #dfeef5 40%, #e8f0e8 100%);
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-      linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px);
-    background-size: 80rpx 80rpx;
-    opacity: 0.5;
-  }
-}
-
-.map-marker {
+.map-amap {
   position: absolute;
-  left: 50%;
-  top: 42%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.marker-arrow {
-  width: 0;
-  height: 0;
-  border-left: 16rpx solid transparent;
-  border-right: 16rpx solid transparent;
-  border-bottom: 36rpx solid #2b7de9;
-  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.2));
-}
-
-.marker-dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  background: #2b7de9;
-  margin-top: -4rpx;
+  inset: 0;
+  z-index: 0;
 }
 
 .map-actions-left {
@@ -340,32 +343,17 @@ export default {
   font-weight: 500;
 }
 
-.map-tools {
-  position: absolute;
-  right: 24rpx;
-  top: calc(var(--status-bar-height) + 120rpx);
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.map-tools__item {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
-}
-
 .device-panel {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 0 20rpx calc(50px + env(safe-area-inset-bottom));
+  // #ifdef H5
+  padding: 0 20rpx 120rpx;
+  // #endif
+  // #ifndef H5
+  padding: 0 20rpx 20rpx;
+  // #endif
   border-radius: 24rpx 24rpx 0 0;
   box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
   z-index: 2;
