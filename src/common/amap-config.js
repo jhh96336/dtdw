@@ -1,7 +1,7 @@
 /**
- * 高德地图配置（Web 端 Key / 安全密钥请在 .env 中配置）
- * 申请地址：https://console.amap.com/dev/key/app
- * Key 类型须为「Web端(JS API)」，Referer 白名单示例：http://127.0.0.1:5174
+ * 高德地图配置（H5 开发/打包均读取 .env.production）
+ * 申请：https://console.amap.com/dev/key/app（类型：Web端 JS API）
+ * Referer 示例：http://127.0.0.1:5174/*、https://dtdw-eight.vercel.app/*
  */
 export const AMAP_KEY = (import.meta.env.VITE_AMAP_KEY || '').trim()
 export const AMAP_SECURITY_CODE = (import.meta.env.VITE_AMAP_SECURITY_CODE || '').trim()

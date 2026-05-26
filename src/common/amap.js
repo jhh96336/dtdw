@@ -1,5 +1,5 @@
 import { AMAP_KEY, AMAP_SECURITY_CODE } from './amap-config'
-
+console.log(AMAP_KEY, AMAP_SECURITY_CODE)
 let loadPromise = null
 
 /** 须在加载地图脚本之前设置（高德 2.0 强制要求） */
@@ -19,7 +19,7 @@ export function ensureAmapSecurityConfig() {
  */
 export function loadAmap() {
   // #ifndef H5
-  return Promise.reject(new Error('AMap JS API only available on H5'))
+  // return Promise.reject(new Error('AMap JS API only available on H5'))
   // #endif
 
   // #ifdef H5
@@ -31,12 +31,12 @@ export function loadAmap() {
   }
   if (!AMAP_KEY) {
     return Promise.reject(
-      new Error('请配置 .env 中的 VITE_AMAP_KEY，并重启 dev 服务')
+      new Error('请配置 .env.production 中的 VITE_AMAP_KEY，并重启 dev 服务')
     )
   }
   if (!AMAP_SECURITY_CODE) {
     return Promise.reject(
-      new Error('请配置 .env 中的 VITE_AMAP_SECURITY_CODE（高德 2.0 必填）')
+      new Error('请配置 .env.production 中的 VITE_AMAP_SECURITY_CODE（高德 2.0 必填）')
     )
   }
 

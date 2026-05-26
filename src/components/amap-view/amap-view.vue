@@ -196,7 +196,7 @@ export default {
     async initH5Map() {
       // #ifdef H5
       if (!AMAP_KEY) {
-        this.loadError = '请配置 .env 中的 VITE_AMAP_KEY 并重启 npm run dev:h5'
+        this.loadError = '请配置 .env.production 中的 VITE_AMAP_KEY 并重启 npm run dev:h5'
         this.$emit('error', new Error(this.loadError))
         return
       }
